@@ -1,5 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, Index } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  Index,
+} from 'typeorm';
 import { Tenant } from './tenant.entity';
+import { RefreshToken } from './refresh-token.entity'; // Ensure this path is correct
 
 export enum UserRole {
   TENANT_ADMIN = 'TENANT_ADMIN',
@@ -26,7 +36,11 @@ export class User {
   @Column()
   password_hash: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.AGENT })
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.AGENT,
+  })
   role: UserRole;
 
   @CreateDateColumn()
@@ -34,4 +48,7 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => RefreshToken, (rt) => rt.user)
+  refreshTokens: RefreshToken[];
 }
